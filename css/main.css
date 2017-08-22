@@ -1,0 +1,189 @@
+html, body, div, input{
+    font-family: 'Roboto Mono', monospace;
+    margin: 0;
+    padding: 0;
+}
+body{
+    background: linear-gradient(0deg, #312A6C, #4F1B57);
+    color: #FFFFFF;
+}
+header{
+    position: relative;
+    background: #657E9C;
+    width: 100%;
+    height: 40px;
+    box-shadow: 0px 3px 5px #212121;
+    overflow: hidden;
+    z-index: 1;
+}
+header .title{
+    padding: 10px 0 10px 10px;
+}
+header .menu{
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+header .menu .item{
+    padding: 10px 0;
+    float: left;
+}
+
+header .menu .item.action{
+    padding: 10px;
+    cursor: pointer;
+}
+
+header .menu .item.action:hover{
+    background: #00A99D;
+}
+
+header .menu .item img{
+    width: 20px;
+    height: 20px;
+}
+
+nav{
+    position: relative;
+    background: rgb(136, 171, 214);
+    width: 100%;
+    height: 30px;
+    overflow: hidden;
+    font-size: 15px;
+}
+
+nav .item{
+    padding: 5px 0;
+    float: left;
+}
+
+nav .item.action{
+    padding: 5px;
+    cursor: pointer;
+}
+
+nav .item.action:hover{
+    background: #00A99D;
+}
+
+nav .item img{
+    width: 16px;
+    height: 16px;
+}
+
+.content{
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+#url-link{
+    font-size: 14px;
+}
+
+.message-box{
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    color: #212121;
+    background: #FFFFFF;
+    box-shadow: 0 2px 5px #212121;
+}
+
+.message-box .title{
+    padding-bottom: 10px;
+    font-size: 20px;
+}
+
+.message-box .buttons{
+    width: 100%;
+    display: flex;
+    margin-top: 10px;
+}
+
+.message-box .buttons .button{
+    width: 50%;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    background: #a1a1a1;
+}
+
+.message-box .buttons .button:hover{
+    background: #1BFFFF;
+}
+
+.notification-data .title{
+    padding-bottom: 5px;
+    font-size: 12px;
+}
+
+.notification-data .check{
+    padding-bottom: 5px;
+    font-size: 12px;
+}
+
+.notification-data input[type="text"]{
+    width: 100%;
+}
+
+.noti-settings input{
+    width: 40px;
+}
+
+.noti-settings.show{
+    display: block;
+}
+
+.notificaiton-info{
+    margin-top: 20px;
+    width: 100%;
+    /* background: #212121; */
+}
+
+#message-log{
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    padding: 15px;
+    transform: translate(-50%, 0);
+    color: yellow;
+    background: #212121;
+    display: none;
+}
+#message-log.show{
+    display: block;
+}
+#message-log.show.animate-in{
+    opacity: 1;
+    animation: message-show 275ms linear;
+}
+#message-log.show.animate-out{
+    opacity: 0;
+    animation: message-hide 275ms linear;
+}
+
+@keyframes message-hide{
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+@keyframes message-show{
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

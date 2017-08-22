@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <title>Stream Notification</title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+        <link rel="stylesheet" href="./css/main.css">
+    </head>
+    <body>
+        <header>
+            <div class="title">Stream Notification</div>
+            <div class="menu">
+                <div class="item action" id="settings"><img src="./images/core/settings.svg" alt="Settings"></div>
+            </div>
+        </header>
+        <nav>
+            <div class="item action" id="save-data">Save</div>
+            <div class="item action" id="clear-data">Clear</div>
+            <div class="item"><span>|</span></div>
+            <!-- <div class="item action" id="start-server">Start Server</div> -->
+            <div class="item action" id="restart-server">Restart Server</div>
+        </nav>
+        <div class="content">
+            <div>Edit Notification Info</div>
+            <div id="url-link"></div>
+            <div class="edit-noifications"></div>
+        </div>
+        <div id="message-log"></div>
+        <div class="noti-settings message-box">
+            <div class="title">Setting</div>
+            <div class="setting">Number of Notifications: <input type="number" min="1" id="total-notifications"></div>
+            <div class="setting">Time Difference between Notifications (min): <input type="number" min="1" id="time-difference-notifications"></div>
+            <div class="buttons">
+                <div class="apply-settings button">Apply</div>
+                <div class="close-settings button">Cancel</div>
+            </div>
+        </div>
+        <script>
+            require('./renderer.js');
+        </script>
+    </body>
+</html>
