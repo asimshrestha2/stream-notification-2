@@ -3,15 +3,12 @@ html
     title Notification
     script(src="js/main.js")
     link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Roboto")
-    link(rel="stylesheet", href="css/theme1.css")
+    link(rel="stylesheet", href = css)
+    style
+      block style
   body
-    .info
-      .image
-        img
-      .text
-        .title Asim Shrestha
-        .sub-title Hey
-
+    block content
+    
     script 
       | document.addEventListener("DOMContentLoaded", function(){
       |    notification = document.querySelector(".info");

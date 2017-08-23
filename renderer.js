@@ -1,5 +1,6 @@
 const express_app = require("./webserver/server");
 const config = require("./config/config")
+const theme = require("./modules/theme")
 const fs = require("fs");
 
 // express_app.start();
@@ -12,6 +13,8 @@ var totalnotifications = document.getElementById("total-notifications");
 var timedifferencebtwnoti = document.getElementById("time-difference-notifications");
 var editNotification = document.querySelector(".content .edit-noifications");
 var messageLog = document.getElementById('message-log');
+var selectTheme = document.getElementById("theme");
+var themes, currentTheme;
 
 function addHtmlNotiInfo(num){
     if(num){
@@ -46,7 +49,8 @@ function saveData(){
         data = {
             config: { 
                 "totalNotifications": totalnotifications.value,
-                "timedifferencebtwnoti": (timedifferencebtwnoti.value * 60 * 1000)
+                "timedifferencebtwnoti": (timedifferencebtwnoti.value * 60 * 1000),
+                "theme": theme.findTheme(themes, selectTheme.value)
             },
             notifications: []
         };
@@ -72,9 +76,10 @@ function loadDataFromFile(){
         fs.readFile(config.filePath, function(err, d){
             if(err) throw err;
             data = JSON.parse(d);
-            console.log(data);
+            // console.log(data);
             totalnotifications.value = data.notifications.length;
             timedifferencebtwnoti.value = Math.round(data.config.timedifferencebtwnoti/60/1000);
+            selectTheme.value = data.config.theme.name;
             addHtmlNotiInfo(totalnotifications.value);
             loadData();
         });
@@ -83,21 +88,33 @@ function loadDataFromFile(){
     }
 }
 
-function loadData(){
+function loadData(){    
     if(editNotification){
         var notificationInfo = editNotification.getElementsByClassName("notificaiton-info");
         for(var i = 0; i < notificationInfo.length; i++){
             var crtNotificationInfo = notificationInfo[i];
-            crtNotificationInfo.querySelector(".noti-title").value = data.notifications[i]["title"];
-            crtNotificationInfo.querySelector(".noti-sub-title").value = data.notifications[i]["sub-title"];
+            if(data.notifications[i]){
+                crtNotificationInfo.querySelector(".noti-title").value = data.notifications[i]["title"];
+                crtNotificationInfo.querySelector(".noti-sub-title").value = data.notifications[i]["sub-title"];
 
-            var imageLocation = data.notifications[i]["image-location"];
-            if(imageLocation.includes(config.localFileUrl)){
-                crtNotificationInfo.querySelector(".noti-image-type").checked = true;
-                imageLocation = imageLocation.replace(config.localFileUrl, "").replace(/\//g, "\\");
+                var imageLocation = data.notifications[i]["image-location"];
+                if(imageLocation.includes(config.localFileUrl)){
+                    crtNotificationInfo.querySelector(".noti-image-type").checked = true;
+                    imageLocation = imageLocation.replace(config.localFileUrl, "").replace(/\//g, "\\");
+                }
+                crtNotificationInfo.querySelector(".noti-image-location").value = imageLocation;
             }
-            crtNotificationInfo.querySelector(".noti-image-location").value = imageLocation;
         }
+    }
+}
+
+function loadThemes(){
+    themes = theme.getThemes();
+    if(themes && selectTheme){
+        selectTheme.innerHTML = ""
+        themes.forEach( (item) => {
+            selectTheme.innerHTML += "<option>" + item.name + "</option>"
+        });
     }
 }
 
@@ -139,6 +156,7 @@ document.addEventListener("DOMContentLoaded", function(){
     };
 
     loadDataFromFile();
+    loadThemes();
     express_app.start();
 
     document.getElementById("save-data").addEventListener("click", saveDataToFile, false);
