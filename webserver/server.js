@@ -46,7 +46,7 @@ var start = function () {
           res.render("themes/" + theme.name, option)
         } else {
           var themePath = path.join(theme.folder, theme.name, theme.name);
-          option.css = "/localimage?loc=" + theme.name + ".css"
+          option.css = "/localimage?loc=" + themePath + ".css"
           console.log(themePath);
           res.send(pug.renderFile(themePath + ".pug", option))
         }
