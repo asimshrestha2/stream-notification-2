@@ -143,6 +143,21 @@ function clientMessage(message, color, time){
     }
 }
 
+var setKeyBindings = () => {
+    var saveMap = {17: false, 83: false};
+    window.addEventListener("keydown", (ev) => {
+        saveMap[ev.keyCode] = true;
+        if (saveMap[17] && saveMap[83]) {
+            saveDataToFile();
+        }
+    }, true)
+
+    window.addEventListener("keyup", (ev) => {
+        if(ev.keyCode in saveMap)
+            saveMap[ev.keyCode] = false;
+    }, true)
+}
+
 document.addEventListener("DOMContentLoaded", function(){
     totalnotifications.value = totalnotifications.getAttribute("min");
     timedifferencebtwnoti.value = timedifferencebtwnoti.getAttribute("min");
@@ -196,4 +211,6 @@ document.addEventListener("DOMContentLoaded", function(){
         express_app.restart();
         clientMessage("Server Restarted");
     }, false);
+
+    setKeyBindings();
 });

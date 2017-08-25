@@ -16,6 +16,7 @@
   "author": "Asim Shrestha",
   "license": "ISC",
   "dependencies": {
+    "auto-launch": "^5.0.1",
     "electron": "^1.7.5",
     "express": "^4.15.4",
     "pug": "^2.0.0-rc.3"

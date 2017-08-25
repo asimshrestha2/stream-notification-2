@@ -16,7 +16,6 @@ var start = function () {
   // getdThemes()
   server = web_app.listen(6583, function () {
     console.log('App listening on port 6583!')
-    // render.clientMessage("Go to http://localhost:6583 for the Notification")
     var webcontent = remote.getCurrentWebContents()
     if(webcontent)
       webcontent.executeJavaScript("document.getElementById('url-link').innerHTML = \"URL: http://localhost:6583\";")
