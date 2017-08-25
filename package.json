@@ -1,6 +1,6 @@
 {
   "name": "stream-notification-2",
-  "version": "1.0.0",
+  "version": "0.4.0",
   "description": "Creating an app to show stream noification like Twitter, Youtube and more",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,10 @@
     "Stream",
     "Games"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asimshrestha2/stream-notification-2.git"
+  },
   "author": "Asim Shrestha",
   "license": "ISC",
   "dependencies": {
@@ -20,5 +24,8 @@
     "electron": "^1.7.5",
     "express": "^4.15.4",
     "pug": "^2.0.0-rc.3"
+  },
+  "devDependencies": {
+    "electron-packager": "^9.0.0"
   }
 }
