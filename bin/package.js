@@ -2,6 +2,7 @@ var electronPackager = require('electron-packager')
 var fs = require('fs')
 var pkg = require('../package.json')
 var path = require('path')
+var zip = require('cross-zip')
 
 var rootPath = path.join(__dirname, "../")
 var distPath = path.join(__dirname, "../../build")
@@ -29,9 +30,19 @@ var win = {
     icon: rootPath + '/images/icon.png'
 }
 var buildWin = function(){
-    electronPackager(win, (err, appPath) => {
+    electronPackager(win, (err, appPaths) => {
         if(err) throw err
-        console.log('Windows Package: ' + appPath)
+        console.log('Windows Package: ' + appPaths)
+
+        appPaths.forEach( (appPath) => {
+            var inPath = appPath
+            var outPath = appPath + ".zip"
+
+            if(outPath.includes("-ia32"))
+                outPath = outPath.replace("-ia32", "")
+
+            zip.zipSync(inPath, outPath)
+        })
     })
 }
 

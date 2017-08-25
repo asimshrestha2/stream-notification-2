@@ -26,6 +26,7 @@
     "pug": "^2.0.0-rc.3"
   },
   "devDependencies": {
+    "cross-zip": "^2.1.5",
     "electron-packager": "^9.0.0"
   }
 }
