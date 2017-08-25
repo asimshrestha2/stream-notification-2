@@ -1,5 +1,10 @@
 const electron = require('electron')
-const {Menu, Tray} = require('electron')
+const {Menu, MenuItem, Tray} = require('electron')
+var AutoLaunch = require('auto-launch');
+
+var streamNotiAutoLauncher = new AutoLaunch({
+  name: 'Stream Notification'
+});
 
 // Module to control application life.
 const app = electron.app
@@ -44,6 +49,7 @@ function createWindow () {
     mainWindow = null
   })
 
+
   winTray = new Tray(__dirname + "/images/icon.png");
   var contextMenu = Menu.buildFromTemplate([
       { label: 'Show App', click: function(){
@@ -54,6 +60,27 @@ function createWindow () {
           app.quit();
       }}
   ])
+  
+  streamNotiAutoLauncher.isEnabled()
+  .then(function(isEnabled){
+    // console.log(isEnabled);
+    var autoRunMenuItem = new MenuItem({
+      label: 'Run on Startup', 
+      type: "checkbox",
+      checked: isEnabled,
+      click(menuItem){
+        if(menuItem.checked){
+          streamNotiAutoLauncher.enable();
+        } else {
+          streamNotiAutoLauncher.disable();
+        }
+      }
+    })
+
+    contextMenu.insert(0, autoRunMenuItem);
+  })
+  .catch(function(err){});
+
   winTray.setToolTip('Steam Notification')
   winTray.setContextMenu(contextMenu)
 }
