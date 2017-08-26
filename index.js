@@ -1,3 +1,5 @@
+if (require('electron-squirrel-startup')) return;
+
 const electron = require('electron')
 const {Menu, MenuItem, Tray} = require('electron')
 var AutoLaunch = require('auto-launch');
@@ -54,7 +56,9 @@ function createWindow () {
   var contextMenu = Menu.buildFromTemplate([
       { label: 'Show App', click: function(){
           mainWindow.show();
-      }},
+      }},{
+        type: 'separator'
+      },
       { label: 'Quit', click: function(){
           app.isQuiting = true;
           app.quit();

@@ -7,6 +7,7 @@ var zip = require('cross-zip')
 var rootPath = path.join(__dirname, "../")
 var distPath = path.join(__dirname, "../../build")
 var appName = "Stream Notification"
+var aName = "Stream-Notification-" + pkg.version
 
 var win = {
     appVersion: pkg.version,
@@ -30,11 +31,13 @@ var win = {
     icon: rootPath + '/images/icon.png'
 }
 var buildWin = function(){
+    var electronInstaller = require('electron-winstaller');
     electronPackager(win, (err, appPaths) => {
         if(err) throw err
         console.log('Windows Package: ' + appPaths)
 
         appPaths.forEach( (appPath) => {
+            console.log("Creating Zip for: ", appPath)
             var inPath = appPath
             var outPath = appPath + ".zip"
 
@@ -42,6 +45,31 @@ var buildWin = function(){
                 outPath = outPath.replace("-ia32", "")
 
             zip.zipSync(inPath, outPath)
+            console.log("Done creating Zip: ", outPath)
+        })
+
+        appPaths.forEach( (appPath) => {
+            console.log(`Windows: Creating ${appPath} installer...`)
+
+            var sys = "win32"
+
+            if(appPath.includes("x64"))
+                sys += "-x64"
+
+            electronInstaller.createWindowsInstaller({
+                appDirectory: appPath,
+                outputDirectory: path.join(appPath, "../", sys),
+                authors: pkg.authors,
+                exe: 'Stream-Notification.exe',
+                noMsi: true,
+                productName: appName,
+                title: appName,
+                name: 'Stream-Notification',
+                setupExe: 'Stream-Notification-Setup-' + pkg.version + '-' + sys + '.exe'
+            })
+            .then(function(){
+                console.log(`Windows installer ${appPath} created`)
+            })
         })
     })
 }
