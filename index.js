@@ -1,6 +1,10 @@
-if (require('electron-squirrel-startup')) return;
-
 const electron = require('electron')
+
+// Module to control application life.
+const app = electron.app
+
+if (require('./modules/squirrel-event-handler').handleSquirrelEvent(app)) return;
+
 const {Menu, MenuItem, Tray} = require('electron')
 var AutoLaunch = require('auto-launch');
 
@@ -8,8 +12,6 @@ var streamNotiAutoLauncher = new AutoLaunch({
   name: 'Stream Notification'
 });
 
-// Module to control application life.
-const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
@@ -27,7 +29,7 @@ function createWindow () {
     width: 700, 
     height: 600, 
     title: "Stream Notification", 
-    icon: __dirname + "/images/icon.png"
+    icon: __dirname + "/images/icon.ico"
   })
 
   mainWindow.setMenu(null)
