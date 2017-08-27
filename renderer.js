@@ -2,7 +2,7 @@ const express_app = require("./webserver/server");
 const config = require("./config/config")
 const theme = require("./modules/theme")
 const fs = require("fs");
-
+const previewWin = require("./modules/preview-window")
 // express_app.start();
 
 // setTimeout(function(){
@@ -39,6 +39,7 @@ function saveDataToFile(){
                 return console.log(err);
             }
             clientMessage("Data saved!");
+            previewWin.reloadPreviewWin();
         });
     }
 }
@@ -183,6 +184,8 @@ document.addEventListener("DOMContentLoaded", function(){
             item.checked = false;
         });
     }, false);
+    
+    document.getElementById("preview-window").addEventListener("click", previewWin.openPreviewWin, false);
     
     document.getElementById("settings").addEventListener("click", function(){
         toggleMessageBox(document.querySelector(".noti-settings"));
