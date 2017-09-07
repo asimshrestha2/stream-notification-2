@@ -42,10 +42,10 @@ html, body, div{
 }
 
 .info .text .title{
-    font-size: 100%;
+    font-size: 120%;
 }
 .info .text .sub-title{
-    font-size: 80%;
+    font-size: 70%;
 }
 
 .info.show{

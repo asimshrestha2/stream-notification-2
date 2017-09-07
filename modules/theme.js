@@ -14,6 +14,10 @@ var defaultThemes = [
     {
         name: "theme3",
         type: "default"
+    },
+    {
+        name: "theme4",
+        type: "default"
     }
 ]
 

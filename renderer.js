@@ -3,11 +3,7 @@ const config = require("./config/config")
 const theme = require("./modules/theme")
 const fs = require("fs");
 const previewWin = require("./modules/preview-window")
-// express_app.start();
 
-// setTimeout(function(){
-//     express_app.stop();
-// }, 5000)
 var data = {};
 var totalnotifications = document.getElementById("total-notifications");
 var timedifferencebtwnoti = document.getElementById("time-difference-notifications");
