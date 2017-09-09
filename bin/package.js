@@ -60,7 +60,7 @@ var buildWin = function(){
 
             electronInstaller.createWindowsInstaller({
                 appDirectory: appPath,
-                outputDirectory: path.join(appPath, "../", sys),
+                outputDirectory: path.join(appPath, "../", aName + "-" + sys),
                 authors: pkg.authors,
                 exe: 'Stream-Notification.exe',
                 noMsi: true,

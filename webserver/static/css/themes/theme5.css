@@ -1,0 +1,102 @@
+html, body, div{
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
+}
+
+.info{
+    position: relative;
+    height: 60px;
+    background: #2F2F2F;
+    display: none;
+    overflow: hidden;
+}
+
+.info .image{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 40px;
+    padding: 0 10px;
+}
+.info .image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.info .text{
+    position: absolute;
+    top: 0;
+    bottom: 5px;
+    right: 0;
+    left: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px 0px 10px 10px;
+    background: #E6E6E6;
+}
+
+.info .text .title{
+    font-size: 100%;
+}
+.info .text .sub-title{
+    font-size: 80%;
+}
+
+.info.show{
+    display: block;
+    width: 250px;
+}
+
+.info.show .image{
+    width: 40px;
+    padding: 10px;
+}
+
+.info.show.animate-in .image{
+    padding: 10px;
+    width: 40px;
+    animation: image-grow 187.5ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.info.show.animate-out .image{
+    animation: image-grow reverse 187.5ms cubic-bezier(0.4, 0.0, 0.2, 1) 187.5ms;
+}
+
+.info.show.animate-in{
+    width: 250px;
+    animation: info-grow 375ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.info.show.animate-out{
+    width: 0px;
+    animation: info-grow reverse 375ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+@keyframes image-grow {
+    from {
+        width: 0;
+        padding: 10px 0;
+    }
+    to {
+        padding: 10px;
+        width: 40px;
+    }
+}
+
+@keyframes info-grow {
+    0% {
+        width: 0;
+    }
+    50%, 52%{
+        width: 60px;
+    }
+    100% {
+        width: 250px;
+    }
+}

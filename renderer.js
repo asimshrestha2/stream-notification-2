@@ -1,6 +1,7 @@
 const express_app = require("./webserver/server");
 const config = require("./config/config")
 const theme = require("./modules/theme")
+const impExp = require("./modules/imp-exp")
 const fs = require("fs");
 const previewWin = require("./modules/preview-window")
 
@@ -197,6 +198,20 @@ document.addEventListener("DOMContentLoaded", function(){
             clientMessage("Total Notifications can be from 1 to 15.");
         }
     }, false);
+    document.querySelector(".noti-settings .import-settings").addEventListener("click", function(){
+        impExp.importFile(function(){
+            loadDataFromFile();
+        });
+        toggleMessageBox(document.querySelector(".noti-settings"));
+    }, false);
+
+    
+    document.querySelector(".noti-settings .export-settings").addEventListener("click", function(){
+        saveDataToFile();
+        impExp.exportFile();
+        toggleMessageBox(document.querySelector(".noti-settings"));
+    }, false);
+    
     document.querySelector(".noti-settings .close-settings").addEventListener("click", function(){
         toggleMessageBox(document.querySelector(".noti-settings"));
     }, false);

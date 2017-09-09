@@ -1,30 +1,25 @@
-var notification;
-var data = [
-	{
-		"title": "@Asim_Shrsth",
-		"sub-title": "Follow Me on Instragram",
-		"image-location": "/localimage?loc=D:/3D/balloon/balloon_sq.png"
-	},
-	{
-		"title": "asim.shrestha",
-		"sub-title": "Follow Me on Facebook",
-		"image-location": "imgs/logos/facebook.svg"
-	},
-	{
-		"title": "@Asim_Shrsth",
-		"sub-title": "Follow Me on Twitter",
-		"image-location": "imgs/logos/twitter.svg"
-	}
-];
-var index = 0;
+var notification = document.querySelector(".info");
+var data = {};
+var socket = io();
+var wait = false;
+var msgstack = [];
 
-function showNotification(uptime, time){
+socket.on('new notification', function(msg){
+    if(msg)
+        data = msg.data
+        if(!wait && msgstack.length == 0)
+            showNotification(10000, data)
+        else
+            msgstack.push(data)
+});
+
+function showNotification(uptime, data){
     if(notification){
+        wait = true;
         uptime = uptime || 10000;
-        time = time || 15000;
-        notification.querySelector(".image img").src = data[index]["image-location"];
-        notification.querySelector(".title").innerText = data[index]["title"];
-        notification.querySelector(".sub-title").innerText = data[index]["sub-title"];
+        notification.querySelector(".image img").src = data["image-location"];
+        notification.querySelector(".title").innerText = data["title"];
+        notification.querySelector(".sub-title").innerText = data["sub-title"];
         notification.classList.add("show");
         notification.classList.add("animate-in");
         setTimeout(function(){
@@ -35,10 +30,11 @@ function showNotification(uptime, time){
             setTimeout(function(){
                 notification.classList.remove("animate-out");
                 notification.classList.remove("show");
-                if (index < (data.length - 1)) { index++; } else { index = 0; }
+                wait = false;
                 setTimeout(function(){
-                    showNotification(uptime, time);
-                }, time);
+                    if(msgstack.length > 0)
+                        showNotification(10000, msgstack.shift());
+                }, 100);
             }, 375);
         }, uptime);
     }

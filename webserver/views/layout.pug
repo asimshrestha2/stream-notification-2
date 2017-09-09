@@ -1,7 +1,6 @@
 html
   head
     title Notification
-    script(src="js/main.js")
     link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Roboto")
     link(rel="stylesheet", href = css)
     style
@@ -9,9 +8,5 @@ html
   body
     block content
     
-    script 
-      | document.addEventListener("DOMContentLoaded", function(){
-      |    notification = document.querySelector(".info");
-      |    data = !{ JSON.stringify(notificaitonInfos) };
-      |    showNotification(#{uptime}, #{time});
-      | });
+    script(src="/socket.io/socket.io.js")
+    script(src="js/main.js")

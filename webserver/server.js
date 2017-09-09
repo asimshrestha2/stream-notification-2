@@ -9,17 +9,19 @@ var fs = require('fs');
 var pug = require('pug');
 const path = require('path');
 var server;
-var data;
+var data, objData, uptimeC, timeC, theme, notificaitonInfos;
+var notiIndex = 0, numUsers = 0;
+var io;
 
 var start = function () {
-  // var themes = getThemes();
-  // getdThemes()
   server = web_app.listen(6583, function () {
     console.log('App listening on port 6583!')
     var webcontent = remote.getCurrentWebContents()
     if(webcontent)
       webcontent.executeJavaScript("document.getElementById('url-link').innerHTML = \"URL: http://localhost:6583\";")
   })
+
+  io = require('socket.io').listen(server);
 
   web_app.use(express.static( __dirname + '/static'))
   web_app.set('views', __dirname + '/views')
@@ -30,16 +32,13 @@ var start = function () {
       console.log(config.filePath)  
       fs.readFile(config.filePath, function(err, data){
         if(err) throw err
-        var objData = JSON.parse(data)
-        var uptimeC = 15000;
-        var theme = objData.config.theme;
-        var timeC = objData.config.timedifferencebtwnoti || 60000;
-        var option = {
-          notificaitonInfos: objData.notifications, 
-          css: "", 
-          uptime: uptimeC, 
-          time: timeC
-        }
+        objData = JSON.parse(data);
+        uptimeC = 15000;
+        theme = objData.config.theme;
+        timeC = objData.config.timedifferencebtwnoti || 60000;
+        notificaitonInfos = objData.notifications;
+        var option = { css: "", uptime: uptimeC }
+        // message()
         if(theme.type = "default"){
           option.css = "css/themes/" + theme.name + ".css"
           res.render("themes/" + theme.name, option)
@@ -53,8 +52,21 @@ var start = function () {
       })
     } else
       res.status(404).end()
-    //res.sendFile(__dirname + '/views/index.html')
   })
+
+  io.on('connection', function(socket){
+    console.log('a user connected')
+    notiIndex = 0;
+    if(numUsers == 0){
+      numUsers++
+      checkNotiInfo(message)
+    }
+
+    socket.on("disconnect", () => {
+      console.log('a user disconnect')
+      numUsers--
+    })
+  });
 
   web_app.get("/localimage", function(req, res){
     var url_parts = url.parse(req.url, true)
@@ -67,6 +79,21 @@ var start = function () {
       res.status(404).end()
   })
 }
+var checkNotiInfo = function(callback){
+  if(notificaitonInfos)
+    callback()
+  else
+    setTimeout(checkNotiInfo, 100);
+}
+
+var message = function(){
+  var msg = { data: notificaitonInfos[notiIndex] }
+  notiIndex = (notiIndex == notificaitonInfos.length - 1) ? 0 : notiIndex + 1;
+  io.emit('new notification', msg);
+  timeC = timeC || 60000;
+  setTimeout(message, timeC);
+}
+
 var stop= function(){
   if(server){
     server.close(function(){
