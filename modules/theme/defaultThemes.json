@@ -1,0 +1,23 @@
+[
+    {
+        "name": "theme1",
+        "type": "default"
+    },
+    {
+        "name": "theme2",
+        "type": "default"
+    },
+    {
+        "name": "theme3",
+        "type": "default"
+    },
+    {
+        "name": "theme4",
+        "type": "default"
+    },
+    {
+        "name": "theme5",
+        "type": "default",
+        "config": "theme5"
+    }
+]

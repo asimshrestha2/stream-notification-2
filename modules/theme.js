@@ -1,44 +1,64 @@
 const path = require("path")
 const fs = require("fs")
 const config = require("../config/config")
+const themeConfigDir = path.join(__dirname, "theme", "theme-config") 
+var themeConfig
 
-var defaultThemes = [
-    {
-        name: "theme1",
-        type: "default"
-    },
-    {
-        name: "theme2",
-        type: "default"
-    },
-    {
-        name: "theme3",
-        type: "default"
-    },
-    {
-        name: "theme4",
-        type: "default"
-    },
-    {
-        name: "theme5",
-        type: "default"
-    }
-]
+var getDefaultThemes = function(){
+    return JSON.parse(fs.readFileSync(path.join(__dirname, "theme", "defaultThemes.json")))
+}
 
 var getThemes = function(){
     var themeASFolder = path.join(__dirname, "../webserver/themes/")
     var themeFolder = config.themeFolder
     if(!getThemeFromFolder(themeFolder)){
-        return defaultThemes
+        return getDefaultThemes()
     } else {
-        return defaultThemes.concat(getThemeFromFolder(themeFolder, "custom"))
+        return getDefaultThemes().concat(getThemeFromFolder(themeFolder, "custom"))
     }
+}
+
+var getThemeConfig = function(config){
+    if(themeConfig && themeConfig.name == config)
+        return getHTMLForConfig(themeConfig.inputs)
+    else
+        themeConfig = JSON.parse(fs.readFileSync(path.join(themeConfigDir, config + ".json")))
+
+    return getHTMLForConfig(themeConfig.inputs)
+}
+
+var getHTMLForConfig = function(inputs){
+    var html = ""
+
+    if(inputs){
+        inputs.forEach((item)=>{
+            switch (item.type) {
+                case "text":
+                    html += `<div class="notification-data"> 
+                            <div class="title">${item.name}:</div> 
+                            <input type="text" class="noti-${item.name}" placeholder="${item.name}">
+                            </div>`
+                    break;
+                case "image":
+                    html += `<div class="notification-data"> 
+                            <div class="title">${item.name}:</div>
+                            <div class="check"><input type="checkbox" class="noti-image-type">Local Path</div>
+                            <input type="text" class="noti-${item.name}" placeholder="Local Path or URL">
+                            </div>`
+                    break;
+                default:
+                    break;
+            }
+        })
+    }
+
+    return `<div class="notificaiton-info">${html}</div>`;
 }
 
 var getThemeFromFolder = function(folderName, type){
     if(fs.existsSync(folderName)){
         var themes = new Array()
-        fs.readdirSync(folderName).forEach( (item) => {
+        fs.readdirSync(folderName).forEach((item) => {
             themes.push({
                 "name": item,
                 "type": type,
@@ -63,5 +83,6 @@ var findTheme = function(themes, name){
 module.exports = {
     getThemes: getThemes,
     getThemeFromFolder: getThemeFromFolder,
+    getThemeConfig: getThemeConfig,
     findTheme: findTheme
 }

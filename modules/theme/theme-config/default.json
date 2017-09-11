@@ -1,0 +1,17 @@
+{
+    "name": "default",
+    "inputs": [
+        { 
+            "name": "Title",
+            "type": "text"
+        },
+        { 
+            "name": "Sub-Title",
+            "type": "text"
+        },
+        { 
+            "name": "Logo",
+            "type": "image"
+        }
+    ]
+}

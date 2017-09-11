@@ -112,6 +112,10 @@ function loadThemes(){
         selectTheme.innerHTML = ""
         themes.forEach( (item) => {
             selectTheme.innerHTML += "<option>" + item.name + "</option>"
+            if(item.config)
+                console.log(theme.getThemeConfig(item.config))
+            else
+                console.log(theme.getThemeConfig("default"))
         });
     }
 }

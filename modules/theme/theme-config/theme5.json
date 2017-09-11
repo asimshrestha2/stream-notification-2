@@ -1,0 +1,21 @@
+{
+    "name": "theme5",
+    "inputs": [
+        { 
+            "name": "Title",
+            "type": "text"
+        },
+        { 
+            "name": "Sub-Title",
+            "type": "text"
+        },
+        { 
+            "name": "Color",
+            "type": "text"
+        },
+        { 
+            "name": "Logo",
+            "type": "image"
+        }
+    ]
+}
