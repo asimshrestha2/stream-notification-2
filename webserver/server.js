@@ -8,9 +8,10 @@ var url = require('url');
 var fs = require('fs');
 var pug = require('pug');
 const path = require('path');
+var themeC = require('../modules/theme');
 var server;
 var data, objData, uptimeC, timeC, theme, notificaitonInfos;
-var notiIndex = 0, numUsers = 0;
+var notiIndex = 0, socketUsers = [];
 var io;
 
 var start = function () {
@@ -37,7 +38,9 @@ var start = function () {
         theme = objData.config.theme;
         timeC = objData.config.timedifferencebtwnoti || 60000;
         notificaitonInfos = objData.notifications;
-        var option = { css: "", uptime: uptimeC }
+        var option = { css: "", uptime: uptimeC, 
+          configInput: themeC.getThemeConfig(theme.config).input
+        }
         // message()
         if(theme.type = "default"){
           option.css = "css/themes/" + theme.name + ".css"
@@ -53,15 +56,15 @@ var start = function () {
     } else
       res.status(404).end()
   })
-
+  
   io.on('connection', function(socket){
     console.log('a user connected', socket.id)
     checkNotiInfo(function(){
-      message(socket)
+      message(socket);
     })
 
     socket.on("disconnect", () => {
-      console.log('a user disconnect')
+      console.log('a user disconnect', socket.id);
     })
   });
 
@@ -84,14 +87,16 @@ var checkNotiInfo = function(callback){
 }
 
 var message = function(socket, index = 0){
-  var msg = { data: notificaitonInfos[index] }
-  console.log(index)
-  index = (index == notificaitonInfos.length - 1) ? 0 : index + 1;
-  socket.emit('new notification', msg);
-  timeC = timeC || 60000;
-  setTimeout(function(){
-    message(socket, index)
-  }, timeC);
+  if(socket.connected){
+    var msg = { data: notificaitonInfos[index] }
+    console.log(index)
+    index = (index == notificaitonInfos.length - 1) ? 0 : index + 1;
+    socket.emit('new notification', msg);
+    timeC = timeC || 60000;
+    setTimeout(function(){
+      message(socket, index)
+    }, timeC);
+  }
 }
 
 var stop= function(){

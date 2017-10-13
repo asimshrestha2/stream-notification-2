@@ -17,9 +17,9 @@ function showNotification(uptime, data){
     if(notification){
         wait = true;
         uptime = uptime || 10000;
-        notification.querySelector(".image img").src = data["image-location"];
-        notification.querySelector(".title").innerText = data["title"];
-        notification.querySelector(".sub-title").innerText = data["sub-title"];
+        notification.querySelector(".image img").src = data["Logo"];
+        notification.querySelector(".title").innerText = data["Title"];
+        notification.querySelector(".sub-title").innerText = data["Sub-Title"];
         notification.classList.add("show");
         notification.classList.add("animate-in");
         setTimeout(function(){
