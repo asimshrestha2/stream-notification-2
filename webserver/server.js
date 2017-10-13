@@ -55,16 +55,13 @@ var start = function () {
   })
 
   io.on('connection', function(socket){
-    console.log('a user connected')
-    notiIndex = 0;
-    if(numUsers == 0){
-      numUsers++
-      checkNotiInfo(message)
-    }
+    console.log('a user connected', socket.id)
+    checkNotiInfo(function(){
+      message(socket)
+    })
 
     socket.on("disconnect", () => {
       console.log('a user disconnect')
-      numUsers--
     })
   });
 
@@ -86,12 +83,15 @@ var checkNotiInfo = function(callback){
     setTimeout(checkNotiInfo, 100);
 }
 
-var message = function(){
-  var msg = { data: notificaitonInfos[notiIndex] }
-  notiIndex = (notiIndex == notificaitonInfos.length - 1) ? 0 : notiIndex + 1;
-  io.emit('new notification', msg);
+var message = function(socket, index = 0){
+  var msg = { data: notificaitonInfos[index] }
+  console.log(index)
+  index = (index == notificaitonInfos.length - 1) ? 0 : index + 1;
+  socket.emit('new notification', msg);
   timeC = timeC || 60000;
-  setTimeout(message, timeC);
+  setTimeout(function(){
+    message(socket, index)
+  }, timeC);
 }
 
 var stop= function(){

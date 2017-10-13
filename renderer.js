@@ -11,14 +11,16 @@ var timedifferencebtwnoti = document.getElementById("time-difference-notificatio
 var editNotification = document.querySelector(".content .edit-noifications");
 var messageLog = document.getElementById('message-log');
 var selectTheme = document.getElementById("theme");
-var themes, currentTheme;
+var themes, currentTheme, currentThemeCfg;
 
-function addHtmlNotiInfo(num){
+function addHtmlNotiInfo(num, callback = () => {}){
     if(num){
         editNotification.innerHTML = "";
+        var html = theme.getHTMLForConfig(theme.getThemeConfig(data.config.theme.config || undefined).inputs)
         for(var i = 0; i < num; i++){
-            editNotification.innerHTML += config.htmlNotiInfo;
+            editNotification.innerHTML += html
         }
+        if(callback) callback()
     }
 }
 
@@ -52,19 +54,29 @@ function saveData(){
             },
             notifications: []
         };
+        currentThemeCfg = theme.getThemeConfig(data.config.theme.config)
         for(var i = 0; i < notificationInfo.length; i++){
             var crtNotificationInfo = notificationInfo[i];
-
-            var imageLocation = crtNotificationInfo.querySelector(".noti-image-location").value;
-            if(crtNotificationInfo.querySelector(".noti-image-type").checked){
-                imageLocation = config.localFileUrl + imageLocation.replace(/\\/g, "/");
+            var saveinput = {};
+            for (var j = 0; j < currentThemeCfg.inputs.length; j++) {
+                var input = currentThemeCfg.inputs[j];
+                switch (input.type) {
+                    case "text":
+                        var inputField = crtNotificationInfo.querySelector(".noti-" + input.name.toLowerCase());
+                        saveinput[input.name] = inputField ? inputField.value : "";
+                        break;
+                    case "image":
+                        var imageLocation = crtNotificationInfo.querySelector(".noti-" + input.name.toLowerCase()).value;
+                        if(crtNotificationInfo.querySelector(".noti-image-type").checked){
+                            imageLocation = config.localFileUrl + imageLocation.replace(/\\/g, "/");
+                        }
+                        saveinput[input.name] = imageLocation;
+                        break;
+                    default:
+                        break;
+                }
             }
-
-            data.notifications.push({
-                "title": crtNotificationInfo.querySelector(".noti-title").value,
-                "sub-title":  crtNotificationInfo.querySelector(".noti-sub-title").value,
-                "image-location": imageLocation
-            });
+            data.notifications.push(saveinput);
         }
     }
 }
@@ -78,7 +90,7 @@ function loadDataFromFile(){
             totalnotifications.value = data.notifications.length;
             timedifferencebtwnoti.value = Math.round(data.config.timedifferencebtwnoti/60/1000);
             selectTheme.value = data.config.theme.name;
-            addHtmlNotiInfo(totalnotifications.value);
+            currentTheme = data.config.theme
             loadData();
         });
     } else {
@@ -86,36 +98,44 @@ function loadDataFromFile(){
     }
 }
 
-function loadData(){    
-    if(editNotification){
-        var notificationInfo = editNotification.getElementsByClassName("notificaiton-info");
-        for(var i = 0; i < notificationInfo.length; i++){
-            var crtNotificationInfo = notificationInfo[i];
-            if(data.notifications[i]){
-                crtNotificationInfo.querySelector(".noti-title").value = data.notifications[i]["title"];
-                crtNotificationInfo.querySelector(".noti-sub-title").value = data.notifications[i]["sub-title"];
-
-                var imageLocation = data.notifications[i]["image-location"];
-                if(imageLocation.includes(config.localFileUrl)){
-                    crtNotificationInfo.querySelector(".noti-image-type").checked = true;
-                    imageLocation = imageLocation.replace(config.localFileUrl, "").replace(/\//g, "\\");
+function loadData(){
+    addHtmlNotiInfo(totalnotifications.value, () => {
+        if(editNotification){
+            var notificationInfo = editNotification.getElementsByClassName("notificaiton-info");
+            var currentThemeCfg = theme.getThemeConfig(data.config.theme.config)
+            for(var i = 0; i < notificationInfo.length; i++){
+                var crtNotificationInfo = notificationInfo[i];
+                if(data.notifications[i]){
+                    for (var j = 0; j < currentThemeCfg.inputs.length; j++) {
+                        var input = currentThemeCfg.inputs[j];
+                        switch (input.type) {
+                            case "text":
+                                crtNotificationInfo.querySelector(".noti-" + input.name.toLowerCase()).value = data.notifications[i][input.name] || "";
+                                break;
+                            case "image":
+                                var imageLocation = data.notifications[i][input.name];
+                                if(imageLocation && imageLocation.includes(config.localFileUrl)){
+                                    crtNotificationInfo.querySelector(".noti-image-type").checked = true;
+                                    imageLocation = imageLocation.replace(config.localFileUrl, "").replace(/\//g, "\\");
+                                }
+                                crtNotificationInfo.querySelector(".noti-" + input.name.toLowerCase()).value = imageLocation || "";
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                 }
-                crtNotificationInfo.querySelector(".noti-image-location").value = imageLocation;
             }
         }
-    }
+    });
 }
 
 function loadThemes(){
     themes = theme.getThemes();
     if(themes && selectTheme){
         selectTheme.innerHTML = ""
-        themes.forEach( (item) => {
+        themes.forEach((item) => {
             selectTheme.innerHTML += "<option>" + item.name + "</option>"
-            if(item.config)
-                console.log(theme.getThemeConfig(item.config))
-            else
-                console.log(theme.getThemeConfig("default"))
         });
     }
 }
@@ -193,11 +213,10 @@ document.addEventListener("DOMContentLoaded", function(){
     }, false);
     document.querySelector(".noti-settings .apply-settings").addEventListener("click", function(){
         if(totalnotifications.value > 0 && totalnotifications.value <= 15){
-            addHtmlNotiInfo(totalnotifications.value);
+            saveDataToFile();
             loadData();
             toggleMessageBox(document.querySelector(".noti-settings"));
             clientMessage("Setting Saved");
-            saveDataToFile();
         } else {
             clientMessage("Total Notifications can be from 1 to 15.");
         }

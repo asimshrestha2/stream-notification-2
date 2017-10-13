@@ -19,12 +19,15 @@ var getThemes = function(){
 }
 
 var getThemeConfig = function(config){
-    if(themeConfig && themeConfig.name == config)
-        return getHTMLForConfig(themeConfig.inputs)
-    else
-        themeConfig = JSON.parse(fs.readFileSync(path.join(themeConfigDir, config + ".json")))
-
-    return getHTMLForConfig(themeConfig.inputs)
+    if(config){
+        if(themeConfig && themeConfig.name == config)
+            return themeConfig
+        else
+            themeConfig = JSON.parse(fs.readFileSync(path.join(themeConfigDir, config + ".json")))
+    } else {
+        themeConfig = JSON.parse(fs.readFileSync(path.join(themeConfigDir, "default.json")))
+    }
+    return themeConfig
 }
 
 var getHTMLForConfig = function(inputs){
@@ -36,14 +39,14 @@ var getHTMLForConfig = function(inputs){
                 case "text":
                     html += `<div class="notification-data"> 
                             <div class="title">${item.name}:</div> 
-                            <input type="text" class="noti-${item.name}" placeholder="${item.name}">
+                            <input type="text" class="noti-${item.name.toLowerCase()}" placeholder="${item.name}">
                             </div>`
                     break;
                 case "image":
                     html += `<div class="notification-data"> 
                             <div class="title">${item.name}:</div>
                             <div class="check"><input type="checkbox" class="noti-image-type">Local Path</div>
-                            <input type="text" class="noti-${item.name}" placeholder="Local Path or URL">
+                            <input type="text" class="noti-${item.name.toLowerCase()}" placeholder="Local Path or URL">
                             </div>`
                     break;
                 default:
@@ -52,7 +55,7 @@ var getHTMLForConfig = function(inputs){
         })
     }
 
-    return `<div class="notificaiton-info">${html}</div>`;
+    return `<div class="notificaiton-info">${html}</div>`.trim()
 }
 
 var getThemeFromFolder = function(folderName, type){
@@ -84,5 +87,6 @@ module.exports = {
     getThemes: getThemes,
     getThemeFromFolder: getThemeFromFolder,
     getThemeConfig: getThemeConfig,
+    getHTMLForConfig: getHTMLForConfig,
     findTheme: findTheme
 }
